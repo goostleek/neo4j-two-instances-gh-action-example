@@ -10,6 +10,7 @@ jobs:
       - name: neo4j-instance-1 setup (ports 7474, 7687)
         run: |
           docker run --detach \
+            --privileged=true \
             --name neo4j-instance-1 \
             --hostname neo4j-instance-1 \
             --env=NEO4J_AUTH=none \
@@ -19,6 +20,7 @@ jobs:
       - name: neo4j-instance-2 setup (ports 8474, 8687)
         run: |
           docker run --detach \
+            --privileged=true \
             --name neo4j-instance-2 \
             --hostname neo4j-instance-2 \
             --env=NEO4J_AUTH=none \
