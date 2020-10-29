@@ -25,6 +25,7 @@ jobs:
             --publish 8474:7474 \
             --publish 8687:7687 \
             neo4j:3.5
+      - run: sleep 5
       - run: docker ps
       - name: Verify neo4j-instance-1
         run: curl -I http://localhost:7474
