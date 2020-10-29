@@ -7,7 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: docker run --detach --publish 8080:80 --name nginx nginx:alpine
       - name: neo4j-instance-1 setup (ports 7474, 7687)
         run: |
           docker run --detach \
@@ -26,12 +25,13 @@ jobs:
             --publish 8474:7474 \
             --publish 8687:7687 \
             neo4j:3.5
-      - run: sleep 5
-      - run: docker ps
-      - run: docker logs neo4j-instance-1
-      - name: Verify nginx
-        run: curl -I http://localhost:8080
-      - name: Verify neo4j-instance-1
-        run: curl -I http://localhost:7474
-      - name: Verify neo4j-instance-2
-        run: curl -I http://localhost:8474
+      - name: Wait for neo4j-instance-1 to be ready
+        timeout-minutes: 1
+        run: (docker logs -f neo4j-instance-1 & ) | grep -q Started
+      - name: Wait for neo4j-instance-2 to be ready
+        timeout-minutes: 1
+        run: (docker logs -f neo4j-instance-2 & ) | grep -q Started
+      - name: Verify neo4j-instance-1 connectivity
+        run: curl -sI http://localhost:7474
+      - name: Verify neo4j-instance-2 connectivity
+        run: curl -sI http://localhost:8474
