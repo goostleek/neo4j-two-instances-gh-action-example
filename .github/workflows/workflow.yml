@@ -1,0 +1,31 @@
+name: Two neo4j instances setup test
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: neo4j-instance-1 setup (ports 7474, 7687)
+        run: |
+          docker run --detach \
+            --name neo4j-instance-1 \
+            --hostname neo4j-instance-1 \
+            --env=NEO4J_AUTH=none \
+            --publish 7474:7474 \
+            --publish 7687:7687 \
+            neo4j:3.5
+      - name: neo4j-instance-2 setup (ports 8474, 8687)
+        run: |
+          docker run --detach \
+            --name neo4j-instance-2 \
+            --hostname neo4j-instance-2 \
+            --env=NEO4J_AUTH=none \
+            --publish 8474:7474 \
+            --publish 8687:7687 \
+            neo4j:3.5
+      - name: Verify neo4j-instance-1
+        run: curl -I http://localhost:7474
+      - name: Verify neo4j-instance-2
+        run: curl -I http://localhost:8474
