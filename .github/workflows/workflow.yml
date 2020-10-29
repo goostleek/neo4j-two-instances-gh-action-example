@@ -1,4 +1,3 @@
-name: Two neo4j instances setup test
 on:
   push:
     branches:
@@ -7,23 +6,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: neo4j-instance-1 setup (ports 7474, 7687)
+      - name: neo4j-instance-1 setup (ports 17474, 17687)
         run: |
           docker run --detach \
             --name neo4j-instance-1 \
-            --hostname neo4j-instance-1 \
             --env NEO4J_AUTH=none \
-            --publish 7474:7474 \
-            --publish 7687:7687 \
+            --publish 17474:7474 \
+            --publish 17687:7687 \
             neo4j:3.5
-      - name: neo4j-instance-2 setup (ports 8474, 8687)
+      - name: neo4j-instance-2 setup (ports 27474, 27687)
         run: |
           docker run --detach \
             --name neo4j-instance-2 \
-            --hostname neo4j-instance-2 \
             --env NEO4J_AUTH=none \
-            --publish 8474:7474 \
-            --publish 8687:7687 \
+            --publish 27474:7474 \
+            --publish 27687:7687 \
             neo4j:3.5
       - name: Wait for neo4j-instance-1 to be ready
         timeout-minutes: 1
@@ -32,6 +29,6 @@ jobs:
         timeout-minutes: 1
         run: (docker logs -f neo4j-instance-2 & ) | grep -q Started
       - name: Verify neo4j-instance-1 connectivity
-        run: curl -sI http://localhost:7474
+        run: curl -sI http://localhost:17474
       - name: Verify neo4j-instance-2 connectivity
-        run: curl -sI http://localhost:8474
+        run: curl -sI http://localhost:27474
