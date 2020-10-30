@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: neo4j-instance-1 setup (ports HTTP:17474, HTTPS:17687, BOLT:17687)
+      - name: neo4j-instance-1 setup (ports HTTP:17474, HTTPS:17473, BOLT:17687)
         run: |
           docker run --detach \
             --name neo4j-instance-1 \
@@ -15,7 +15,7 @@ jobs:
             --publish 17473:7473 \
             --publish 17687:7687 \
             neo4j:3.5
-      - name: neo4j-instance-2 setup (ports HTTP:27474, HTTPS:27687, BOLT:27687)
+      - name: neo4j-instance-2 setup (ports HTTP:27474, HTTPS:27473, BOLT:27687)
         run: |
           docker run --detach \
             --name neo4j-instance-2 \
