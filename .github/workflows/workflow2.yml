@@ -5,6 +5,18 @@ on:
 env:
   DOCKER_IMAGE: hello
 jobs:
+  list-branches-1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git branch -r
+  list-branches-2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: git branch -r
   test-container:
     runs-on: ubuntu-latest
     container: alpine:{{ env.GITHUB_RUN_ID }}
