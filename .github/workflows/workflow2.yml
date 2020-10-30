@@ -1,0 +1,48 @@
+on:
+  push:
+    branches:
+      - master
+env:
+  DOCKER_IMAGE: hello
+jobs:
+  test-container:
+    runs-on: ubuntu-latest
+    container: alpine:{{ env.GITHUB_RUN_ID }}
+    steps:
+      - run: ls
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build ${{ env.DOCKER_IMAGE }} image
+        run: |
+          echo -e 'FROM alpine\n ENTRYPOINT ["echo", "Hello Github"]' | docker build -t hello -f - .
+      - name: Export ${{ env.DOCKER_IMAGE }} image to TAR archive
+        run: |
+          docker save ${{ env.DOCKER_IMAGE }} > ${{ env.DOCKER_IMAGE }}.tar
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.DOCKER_IMAGE }}.tar
+          path: ${{ env.DOCKER_IMAGE }}.tar
+  use-image:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.DOCKER_IMAGE }}.tar
+      - run: |
+          docker load < ${{ env.DOCKER_IMAGE }}.tar
+      - run: |
+          docker run --rm ${{ env.DOCKER_IMAGE }}
+  use-image-as-service:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.DOCKER_IMAGE }}.tar
+      - run: |
+          docker load < ${{ env.DOCKER_IMAGE }}.tar
+      - run: |
+          docker run --rm ${{ env.DOCKER_IMAGE }}
+
