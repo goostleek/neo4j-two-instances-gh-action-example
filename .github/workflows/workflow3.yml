@@ -1,0 +1,11 @@
+on:
+  push:
+    branches:
+      - date-test
+jobs:
+  date-test:
+    runs-on: ubuntu-latest
+    env:
+      MY_DATE: '2020-10-07T12:00:00+01:00'
+    steps:
+      - run: echo $MY_DATE
