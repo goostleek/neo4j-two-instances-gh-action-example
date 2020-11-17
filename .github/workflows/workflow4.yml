@@ -1,0 +1,20 @@
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      API_URL:
+        required: true
+        default: https://example.com
+jobs:
+  build:
+    env:
+      API_URL: ${{ github.event.inputs.API_URL }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set API_URL environment variale
+        if: env.API_URL == null
+        run: echo "API_URL=https://example.com" >> $GITHUB_ENV
+      - name: Test API_URL environment variale
+        run: echo "API_URL=$API_URL"
