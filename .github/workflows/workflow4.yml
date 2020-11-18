@@ -18,3 +18,14 @@ jobs:
         run: echo "API_URL=https://example.com" >> $GITHUB_ENV
       - name: Test API_URL environment variale
         run: echo "API_URL=$API_URL"
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        run: |
+          echo "GIT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: Use environment variables
+        run: |
+          echo "GIT_SHA=${GIT_SHA}"
+          echo "GIT_BRANCH=${GIT_BRANCH}"
