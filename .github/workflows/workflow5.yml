@@ -8,7 +8,7 @@ jobs:
   setup-matrix:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup ${{ env.BUILD_VARIANT }} build matrix variants
+      - name: Setup matrix combinations
         id: setup-matrix-combinations
         run: |
           MATRIX_PARAMS_COMBINATIONS='
@@ -18,12 +18,12 @@ jobs:
           '
           echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
     outputs:
-      matrix-combinations: ${{ setup-matrix.setup-matrix-combinations.outputs.matrix-combinations }}
+      matrix-combinations: ${{ steps.setup-matrix.setup-matrix-combinations.outputs.matrix-combinations }}
   build:
     runs-on: ubuntu-latest
-    needs: set-up-matrix
+    needs: setup-matrix
     strategy:
-      matrix: ${{ fromJson(needs.set-up.outputs.build-variants) }}
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix-combinations) }}
     steps:
       - run: |
           echo foo=${{ matrix.foo }}
